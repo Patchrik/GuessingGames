@@ -38,6 +38,9 @@ namespace GuessingGame
         case "hard":
           allowedAttempts = 4;
           break;
+        case "cheater":
+          allowedAttempts = 10;
+          break;
       }
       return allowedAttempts;
     }
@@ -47,9 +50,13 @@ namespace GuessingGame
       Console.WriteLine("");
       int allowedAttempts = selectDifficulty();
       int secretNumber = new Random().Next(1, 101);
+      bool cheat = false;
       Console.Write("Guess a number between 1 and 100: ");
       Console.WriteLine("");
-
+      if (allowedAttempts == 10)
+      {
+        cheat = true;
+      }
       int guessAttempts = 0;
       while (guessAttempts < allowedAttempts)
       {
@@ -57,36 +64,71 @@ namespace GuessingGame
         int userGuessNumber;
         Int32.TryParse(userGuess, out userGuessNumber);
         Console.WriteLine($"You guessed {userGuessNumber}.");
-        if (userGuessNumber != secretNumber)
+        if (cheat == false)
         {
-          Console.WriteLine("Nope that wasn't it!");
-          guessAttempts++;
-
-          if (guessAttempts != allowedAttempts)
+          if (userGuessNumber != secretNumber)
           {
-            if (userGuessNumber > secretNumber)
+            Console.WriteLine("Nope that wasn't it!");
+            guessAttempts++;
+
+            if (guessAttempts != allowedAttempts)
             {
-              Console.WriteLine("Your Guess was too high!");
+              if (userGuessNumber > secretNumber)
+              {
+                Console.WriteLine("Your Guess was too high!");
+              }
+              else
+              {
+                Console.WriteLine("Your Guess was too low!");
+              }
+              Console.WriteLine($"You have {allowedAttempts - guessAttempts} left!");
+              Console.WriteLine("Guess again: ");
             }
             else
             {
-              Console.WriteLine("Your Guess was too low!");
+              Console.WriteLine("OH NO, You're out of guesses!");
+              Console.WriteLine($"The Secret Number was {secretNumber}");
             }
-            Console.WriteLine($"You have {allowedAttempts - guessAttempts} left!");
-            Console.WriteLine("Guess again: ");
           }
           else
           {
-            Console.WriteLine("OH NO, You're out of guesses!");
-            Console.WriteLine($"The Secret Number was {secretNumber}");
+            Console.WriteLine("THAT'S IT! Good job!");
+            Console.WriteLine($"And it only took you {guessAttempts} tries!");
+            break;
           }
         }
+        // This is the Cheat code block - It uses a fake counter to give you more and more guesses
         else
         {
-          Console.WriteLine("THAT'S IT! Good job!");
-          Console.WriteLine($"And it only took you {guessAttempts} tries!");
-          break;
+          if (userGuessNumber != secretNumber)
+          {
+            Console.WriteLine("Nope that wasn't it!");
+            guessAttempts++;
+
+            if (guessAttempts != allowedAttempts)
+            {
+              if (userGuessNumber > secretNumber)
+              {
+                Console.WriteLine("Your Guess was too high!");
+              }
+              else
+              {
+                Console.WriteLine("Your Guess was too low!");
+              }
+              Console.WriteLine($"You have {allowedAttempts - guessAttempts} left!");
+              Console.WriteLine($"You know what, better give you 3 more attempts to be safe!");
+              allowedAttempts += 3;
+              Console.WriteLine("Guess again: ");
+            }
+          }
+          else
+          {
+            Console.WriteLine("THAT'S IT! Good job!");
+            Console.WriteLine($"And it only took you {guessAttempts} tries!");
+            break;
+          }
         }
+
       }
     }
   }
